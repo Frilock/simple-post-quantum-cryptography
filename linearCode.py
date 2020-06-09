@@ -5,6 +5,7 @@ from collections import Counter
 
 class LinearCode(object):
     def __init__(self, n, k, q):
+        # todo: проверки на размерность поля
         self.k = k  # длина сообщения
         self.n = n  # длина кодового слова
         self.q = q  # размер поля
