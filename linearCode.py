@@ -1,5 +1,6 @@
 import numpy as np
 import itertools
+import random
 from collections import Counter
 
 
@@ -9,6 +10,9 @@ class LinearCode(object):
         self.k = k  # длина сообщения
         self.n = n  # длина кодового слова
         self.q = q  # размер поля
+        matrix_a = np.random.randint(self.q, size=(self.k, self.n - self.k))
+        self.G = self.get_generator_matrix(matrix_a)
+        self.H = self.get_check_matrix(matrix_a)
 
     def get_spectrum(self):
         weights = Counter()
@@ -17,13 +21,23 @@ class LinearCode(object):
             weights[weight] += 1
         return weights
 
-    def get_generating_matrix(self):
+    def get_error_vector(self, bit_error):
+        error_vector = np.zeros(self.n)
+        for i in range(len(error_vector)):
+            if random.random() < bit_error:
+                error_vector[i] = 1
+        return error_vector
+    
+    def get_generator_matrix(self, matrix_a):
         identity_matrix = np.eye(self.k, dtype=int)
-        matrix_a = np.random.randint(self.q, size=(self.k, self.n - self.k))
         return np.hstack((identity_matrix, matrix_a))
 
+    def get_check_matrix(self, matrix_a):
+        identity_matrix = np.eye(self.n - self.k, dtype=int)
+        return np.hstack((-matrix_a.T % self.q, identity_matrix))
+
     def get_codeword(self, message):
-        return (message @ self.get_generating_matrix()) % self.q  # c = i * G
+        return (message @ self.G) % self.q  # c = i * G
 
     def get_random_message(self):
         return np.random.randint(self.q, size=self.k)
