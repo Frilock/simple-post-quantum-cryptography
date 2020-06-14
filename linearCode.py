@@ -49,7 +49,7 @@ class LinearCode(object):
         return codewords
     
     def get_min_distance(self):
-        min_distance = 1000
+        min_distance = self.n
         for codeword in self.codewords:
             codeword_weight = self.get_weight(codeword)
             if codeword_weight < min_distance and codeword_weight != 0:
