@@ -48,6 +48,29 @@ class LinearCode(object):
             codewords.append(self.get_codeword(message))
         return codewords
     
+    def get_syndrome(self, vector):
+        return (vector @ self.H.T) % self.q
+    
+    def get_syndrome_table(self):
+        size = 2 ** (self.n - self.k) - 1
+        syndrome_table = {}
+        iteration_counter = 0
+        weight_counter = -1
+        for i in range(size):
+            error_pattern = np.zeros(self.n, dtype=int)
+            if iteration_counter == self.n:
+                iteration_counter = 0
+                weight_counter += 1
+                error_pattern[weight_counter] = 1
+            error_pattern[iteration_counter] = 1
+            syndrome = self.get_syndrome(error_pattern)
+            syndrome_str = self.vector_to_str(syndrome)
+            if syndrome_str not in syndrome_table:
+                syndrome_table[syndrome_str] = error_pattern
+            iteration_counter += 1
+
+        return syndrome_table
+
     def get_min_distance(self):
         min_distance = self.n
         for codeword in self.codewords:
@@ -69,3 +92,14 @@ class LinearCode(object):
     @staticmethod
     def get_weight(codeword):
         return np.count_nonzero(codeword)
+    
+    # todo: move this utils methods to other class
+    def vector_to_str(self, vector):
+        res = ''
+        for v in vector:
+            res += str(int(v))
+        return res
+    
+    def int_to_vector(self, value, len):
+        s = np.binary_repr(value, width=len)
+        return np.fromstring(s, 'u1') - ord('0')
