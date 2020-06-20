@@ -25,7 +25,7 @@ class LinearCode(object):
         return weights
 
     def get_error_vector(self, bit_error):
-        error_vector = np.zeros(self.n)
+        error_vector = np.zeros(self.n, dtype=int)
         for i in range(len(error_vector)):
             if random.random() < bit_error:
                 error_vector[i] = 1
@@ -52,23 +52,16 @@ class LinearCode(object):
         return (vector @ self.H.T) % self.q
     
     def get_syndrome_table(self):
-        size = 2 ** (self.n - self.k) - 1
+        size = 2 ** (self.n - self.k)
         syndrome_table = {}
         iteration_counter = 0
         weight_counter = -1
-        for i in range(size):
-            error_pattern = np.zeros(self.n, dtype=int)
-            if iteration_counter == self.n:
-                iteration_counter = 0
-                weight_counter += 1
-                error_pattern[weight_counter] = 1
-            error_pattern[iteration_counter] = 1
-            syndrome = self.get_syndrome(error_pattern)
-            syndrome_str = self.vector_to_str(syndrome)
-            if syndrome_str not in syndrome_table:
+        for i in range(0, 2 ** self.n):
+            error_pattern = self.int_to_vector(i, self.n)
+            if self.get_weight(error_pattern) <= self.t:
+                syndrome = self.get_syndrome(error_pattern)
+                syndrome_str = self.vector_to_str(syndrome)
                 syndrome_table[syndrome_str] = error_pattern
-            iteration_counter += 1
-
         return syndrome_table
 
     def get_min_distance(self):
