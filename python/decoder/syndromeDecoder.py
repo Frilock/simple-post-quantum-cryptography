@@ -1,8 +1,6 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from linearCode import LinearCode
+from python.linearCode import LinearCode
+import python.utils as utils
 
-# реализации методов декодера , подумать о входящих параметрах и прочих ограничениях
 
 def syndrome_decoding_analysis(lc):
     syndrome_table = lc.get_syndrome_table()
@@ -36,7 +34,6 @@ def syndrome_decoding_analysis(lc):
     plt.plot(bit_errors, rejections, label='rejections')
     plt.legend()
     plt.show()
-
 
 
 lc = LinearCode(17, 7, 2)
