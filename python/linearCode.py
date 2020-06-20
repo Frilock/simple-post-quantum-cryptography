@@ -1,6 +1,7 @@
 import numpy as np
 import itertools
 import random
+import python.utils as utils
 from collections import Counter
 
 
@@ -14,8 +15,8 @@ class LinearCode(object):
         self.G = self.get_generator_matrix(matrix_a)
         self.H = self.get_check_matrix(matrix_a)
         self.codewords = self.get_all_codewords()
-        self.d = self.get_min_distance() # Минимальное расстояние
-        self.t = int((self.d - 1) / 2) # Корректирующая способность
+        self.d = self.get_min_distance()  # Минимальное расстояние
+        self.t = int((self.d - 1) / 2)  # Корректирующая способность
 
     def get_spectrum(self):
         weights = Counter()
@@ -54,10 +55,10 @@ class LinearCode(object):
     def get_syndrome_table(self):
         syndrome_table = {}
         for i in range(0, 2 ** self.n):
-            error_pattern = self.int_to_vector(i, self.n)
+            error_pattern = utils.int_to_vector(i, self.n)
             if self.get_weight(error_pattern) <= self.t:
                 syndrome = self.get_syndrome(error_pattern)
-                syndrome_str = self.vector_to_str(syndrome)
+                syndrome_str = utils.vector_to_str(syndrome)
                 syndrome_table[syndrome_str] = error_pattern
         return syndrome_table
 
@@ -83,14 +84,3 @@ class LinearCode(object):
     @staticmethod
     def get_weight(codeword):
         return np.count_nonzero(codeword)
-    
-    # todo: move this utils methods to other class
-    def vector_to_str(self, vector):
-        res = ''
-        for v in vector:
-            res += str(int(v))
-        return res
-    
-    def int_to_vector(self, value, len):
-        s = np.binary_repr(value, width=len)
-        return np.fromstring(s, 'u1') - ord('0')

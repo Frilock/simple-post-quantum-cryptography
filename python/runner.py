@@ -1,7 +1,7 @@
-from linearCode import LinearCode
+from python.linearCode import LinearCode
 import matplotlib.pyplot as plot
 import numpy as np
-# количество ошибок посчитать, которые исправляются
+# реализации методов декодера , подумать о входящих параметрах и прочих ограничениях
 
 
 def get_graphics():
@@ -22,5 +22,3 @@ def get_graphics():
 
 
 get_graphics()
-
-
