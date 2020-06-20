@@ -16,7 +16,7 @@ def syndrome_decoding_analysis(lc, bit_error):
         if syndrome_str in syndrome_table:
             error_pattern = syndrome_table[syndrome_str]
             decoded = (received + error_pattern) % lc.q
-            if (decoded != codeword).all():
+            if (decoded != codeword).any():
                 decoding_error_count += 1
         else:
             # Синдрома нет в таблице - отказ от декодирования
