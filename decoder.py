@@ -16,7 +16,6 @@ def syndrome_decoding_analysis(lc, bit_error):
         if syndrome_str in syndrome_table:
             error_pattern = syndrome_table[syndrome_str]
             decoded = (received + error_pattern) % lc.q
-            print(codeword, decoded)
             if (decoded != codeword).all():
                 decoding_error_count += 1
         else:
@@ -24,13 +23,9 @@ def syndrome_decoding_analysis(lc, bit_error):
             decoding_rejection_count += 1
     return decoding_error_count, decoding_rejection_count
     
-lc = LinearCode(7, 4, 2)
+lc = LinearCode(15, 5, 2)
 lc.print_params()
 
-syndrome_table = lc.get_syndrome_table()
-for s, e in syndrome_table.items():
-    print(s, e)
-
-errors, rejections = syndrome_decoding_analysis(lc, 0.1)
+errors, rejections = syndrome_decoding_analysis(lc, 0.3)
 print("Errors:", errors)
 print("Rejections:", rejections)

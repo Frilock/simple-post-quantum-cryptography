@@ -52,10 +52,7 @@ class LinearCode(object):
         return (vector @ self.H.T) % self.q
     
     def get_syndrome_table(self):
-        size = 2 ** (self.n - self.k)
         syndrome_table = {}
-        iteration_counter = 0
-        weight_counter = -1
         for i in range(0, 2 ** self.n):
             error_pattern = self.int_to_vector(i, self.n)
             if self.get_weight(error_pattern) <= self.t:
@@ -80,7 +77,8 @@ class LinearCode(object):
         print("Length codeword:", self.n)
         print("Length message:", self.k)
         print("Minimum distance:", self.d)
-        print("Correction ability", self.t)
+        print("Correction ability:", self.t)
+        print("Codewords amount:", 2 ** self.k)
 
     @staticmethod
     def get_weight(codeword):
