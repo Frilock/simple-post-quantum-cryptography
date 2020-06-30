@@ -29,6 +29,9 @@ def syndrome_decoding_analysis(linear_code):
         errors.append(error_count)
         rejections.append(rejection_count)
 
+        print("Bit error:", bit_error,
+              "Decoded:", len(linear_code.codewords) - error_count - rejection_count)
+
     plot.figure()
     plot.xlabel('bit error')
     plot.ylabel('errors amount')
@@ -38,7 +41,7 @@ def syndrome_decoding_analysis(linear_code):
     plot.show()
 
 
-linear_code = LinearCode(17, 7, 2)
+linear_code = LinearCode(30, 10, 2)
 linear_code.print_params()
 
 syndrome_decoding_analysis(linear_code)
