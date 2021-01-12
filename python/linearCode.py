@@ -80,6 +80,7 @@ class LinearCode(object):
         print("Minimum distance:", self.d)
         print("Correction ability:", self.t)
         print("Codewords amount:", 2 ** self.k)
+        print()
 
     @staticmethod
     def get_weight(codeword):

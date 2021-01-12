@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plot
 
 
-def minimum_distance_decoder(linear_code):
+def minimum_distance_decoder(lin_code):
     error_bit_array = np.arange(0.0, 1.1, 0.1)
     array_count_error = []
     array_rejection_count_error = []
@@ -12,14 +12,14 @@ def minimum_distance_decoder(linear_code):
         count_error = 0
         rejection_count = 0
 
-        codewords = linear_code.codewords
+        codewords = lin_code.codewords
         for codeword in codewords:
             copy_codewords = codewords.copy()
             temp_index = 0
             flag_rejection_error = False
             result_codeword = []
             hamming_distance = 100  # инициализируем заведомо большим числом
-            error_vector = linear_code.get_error_vector(error_bit)
+            error_vector = lin_code.get_error_vector(error_bit)
 
             received_message = (error_vector + codeword) % 2  # передали сообщение, начинаем декодирование
             for index, any_codeword in enumerate(codewords):  # ищем минимальное расстояние
@@ -58,5 +58,6 @@ def get_hamming_distance(codeword, any_codeword):
     return np.sum(codeword != any_codeword)
 
 
-linear_code = LinearCode(30, 10, 2)
+linear_code = LinearCode(15, 8, 2)
+linear_code.print_params()
 minimum_distance_decoder(linear_code)

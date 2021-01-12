@@ -1,36 +1,43 @@
 from python.linearCode import LinearCode
+import time
 import numpy as np
 import matplotlib.pyplot as plot
 import python.utils as utils
 
 
-def syndrome_decoding_analysis(linear_code):
-    syndrome_table = linear_code.get_syndrome_table()
-    bit_errors = np.arange(0, 1, 0.1)
+def syndrome_decoding_analysis(lin_code):
+    syndrome_table = lin_code.get_syndrome_table()
+    bit_errors = np.arange(0, 1.1, 0.1)
     errors = []
     rejections = []
+    time_array = []
 
     for bit_error in bit_errors:
+        start_time = time.time_ns()
         error_count = 0
         rejection_count = 0
     
-        for codeword in linear_code.codewords:
-            error = linear_code.get_error_vector(bit_error)
-            received = (codeword + error) % linear_code.q
-            syndrome = linear_code.get_syndrome(received)
+        for codeword in lin_code.codewords:
+            error = lin_code.get_error_vector(bit_error)
+            received = (codeword + error) % lin_code.q
+            syndrome = lin_code.get_syndrome(received)
             syndrome_str = utils.vector_to_str(syndrome)
             if syndrome_str in syndrome_table:
                 error_pattern = syndrome_table[syndrome_str]
-                decoded = (received + error_pattern) % linear_code.q
+                decoded = (received + error_pattern) % lin_code.q
                 if not np.array_equal(decoded, codeword):
                     error_count += 1
             else:  # Синдрома нет в таблице - отказ от декодирования
                 rejection_count += 1
+        end_time = time.time_ns()
+
+        time_array.append(end_time - start_time)
         errors.append(error_count)
         rejections.append(rejection_count)
 
-        print("Bit error:", bit_error,
-              "Decoded:", len(linear_code.codewords) - error_count - rejection_count)
+        print("Elapsed: ", end_time - start_time)
+        print("Bit error:", bit_error, "decoded: ", len(lin_code.codewords) - error_count - rejection_count,
+              "count errors:", error_count, ", rejection counts:", rejection_count)
 
     plot.figure()
     plot.xlabel('bit error')
