@@ -17,11 +17,11 @@ def polynomial_decoder(lin_code):
         H_gamma_array.append(H_gamma)
 
     time_array = []
-    error_count_array = []
-    rejection_count_array = []
+    errors = []
+    rejections = []
     bit_error_array = np.arange(0.0, 1.1, 0.1)
     for bit_error in bit_error_array:
-        start_time = time.time_ns()
+        start_time = time.time()
         rejection_count = 0
         error_count = 0
         print("Number of codewords", len(lin_code.codewords))
@@ -56,11 +56,11 @@ def polynomial_decoder(lin_code):
                     break
             if not decoded_flag:
                 rejection_count += 1
-        end_time = time.time_ns()
+        end_time = time.time()
 
         time_array.append(end_time - start_time)
-        error_count_array.append(error_count)
-        rejection_count_array.append(rejection_count)
+        errors.append(error_count)
+        rejections.append(rejection_count)
 
         print("Elapsed:", end_time - start_time,
               "Bit error:", bit_error,
@@ -71,10 +71,12 @@ def polynomial_decoder(lin_code):
     plot.figure()
     plot.xlabel('bit error')
     plot.ylabel('count error')
-    plot.plot(bit_error_array, error_count_array, color='pink', label='count error')
-    plot.plot(bit_error_array, rejection_count_array, color='green', label='rejection error')
+    plot.plot(bit_error_array, errors, color='pink', label='count error')
+    plot.plot(bit_error_array, rejections, color='green', label='rejection error')
     plot.legend()
     plot.show()
+
+    return time_array, errors, rejections
 
 
 linear_code = LinearCode(30, 10, 2)

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plot
 from python.linearCode import LinearCode
 
 
-def information_set_decoding(lin_code):
+def information_set_decoder(lin_code):
     information_sets = utils.get_all_information_sets(lin_code.n, lin_code.k, lin_code.G)
     H_gamma_array = []
 
@@ -16,12 +16,12 @@ def information_set_decoding(lin_code):
         H_gamma = (Hi_inv @ lin_code.H) % lin_code.q
         H_gamma_array.append(H_gamma)
 
-    error_count_array = []
-    rejection_count_array = []
+    errors = []
+    rejections = []
     time_array = []
     bit_error_array = np.arange(0.0, 1.1, 0.1)
     for bit_error in bit_error_array:
-        start_time = time.time_ns()
+        start_time = time.time()
         rejection_count = 0
         error_count = 0
         print("Number of codewords", len(lin_code.codewords))
@@ -47,11 +47,11 @@ def information_set_decoding(lin_code):
                 counter += 1
             if counter == len(information_sets):
                 rejection_count += 1
-        end_time = time.time_ns()
+        end_time = time.time()
 
         time_array.append(end_time - start_time)
-        error_count_array.append(error_count)
-        rejection_count_array.append(rejection_count)
+        errors.append(error_count)
+        rejections.append(rejection_count)
 
         print("Elapsed:", end_time - start_time,
               ", bit error:", bit_error,
@@ -62,12 +62,14 @@ def information_set_decoding(lin_code):
     plot.figure()
     plot.xlabel('bit error')
     plot.ylabel('count error')
-    plot.plot(bit_error_array, error_count_array, color='pink', label='count error')
-    plot.plot(bit_error_array, rejection_count_array, color='green', label='rejection error')
+    plot.plot(bit_error_array, errors, color='pink', label='count error')
+    plot.plot(bit_error_array, rejections, color='green', label='rejection error')
     plot.legend()
     plot.show()
+
+    return time_array, errors, rejections
 
 
 linear_code = LinearCode(30, 10, 2)
 linear_code.print_params()
-information_set_decoding(linear_code)
+information_set_decoder(linear_code)
