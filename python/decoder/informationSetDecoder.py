@@ -1,17 +1,16 @@
 import numpy as np
 import time
-import itertools
 import python.utils as utils
 import matplotlib.pyplot as plot
 from python.linearCode import LinearCode
 
 
 def information_set_decoding(lin_code):
-    information_sets = get_all_information_sets(lin_code.n, lin_code.k, lin_code.G)
+    information_sets = utils.get_all_information_sets(lin_code.n, lin_code.k, lin_code.G)
     H_gamma_array = []
-    print("Количество совокупностей (итераций):", information_sets.__sizeof__())
+
     for inf_set in information_sets:
-        inf_set_h = get_information_set_h(inf_set, lin_code.n)
+        inf_set_h = utils.get_information_set_h(inf_set, lin_code.n)
         Hi = utils.matrix_from_columns(lin_code.H, inf_set_h)
         Hi_inv = utils.inverse_matrix(Hi)
         H_gamma = (Hi_inv @ lin_code.H) % lin_code.q
@@ -19,6 +18,7 @@ def information_set_decoding(lin_code):
 
     error_count_array = []
     rejection_count_array = []
+    time_array = []
     bit_error_array = np.arange(0.0, 1.1, 0.1)
     for bit_error in bit_error_array:
         start_time = time.time_ns()
@@ -48,13 +48,17 @@ def information_set_decoding(lin_code):
             if counter == len(information_sets):
                 rejection_count += 1
         end_time = time.time_ns()
-        print("Elapsed: ", end_time - start_time)
+
+        time_array.append(end_time - start_time)
         error_count_array.append(error_count)
         rejection_count_array.append(rejection_count)
-        print("Bit error:", bit_error,
-              "decoded: ", len(lin_code.codewords) - error_count - rejection_count,
-              "count errors:", error_count,
+
+        print("Elapsed:", end_time - start_time,
+              ", bit error:", bit_error,
+              ", decoded:", len(lin_code.codewords) - error_count - rejection_count,
+              ", count errors:", error_count,
               ", rejection counts:", rejection_count)
+
     plot.figure()
     plot.xlabel('bit error')
     plot.ylabel('count error')
@@ -64,30 +68,6 @@ def information_set_decoding(lin_code):
     plot.show()
 
 
-def get_all_information_sets(n, k, matrix_g):
-    information_sets = []
-    candidates = itertools.combinations(list(range(0, n)), k)
-    print("Candidates: ", )
-    for candidate in candidates:
-        Gi = utils.matrix_from_columns(matrix_g, list(candidate))
-        try:
-            Gi_inv = utils.inverse_matrix(Gi)
-        except RuntimeError:
-            continue
-        information_sets.append(list(candidate))
-    print("vishli")
-    return information_sets
-
-
-def get_information_set_h(information_set_g, n):
-    inf_set_h = []
-    for i in range(0, n):
-        if i not in information_set_g:
-            inf_set_h.append(i)
-    return inf_set_h
-
-
 linear_code = LinearCode(30, 10, 2)
-
 linear_code.print_params()
 information_set_decoding(linear_code)

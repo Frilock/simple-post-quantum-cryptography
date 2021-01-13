@@ -1,4 +1,5 @@
 import numpy as np
+import itertools
 
 
 def vector_to_str(vector):
@@ -68,3 +69,28 @@ def inverse_matrix(matrix):
     augmented_matrix = np.hstack([matrix, np.eye(n_rows)])
     rref_form = RREF_binary(augmented_matrix)
     return rref_form[:, n_rows:]
+
+
+def get_all_information_sets(n, k, matrix_g):
+    information_sets = []
+    candidates = itertools.combinations(list(range(0, n)), k)
+    for candidate in candidates:
+        Gi = matrix_from_columns(matrix_g, list(candidate))
+        try:
+            Gi_inv = inverse_matrix(Gi)
+        except RuntimeError:
+            continue
+        information_sets.append(list(candidate))
+    return information_sets
+
+
+def get_information_set_h(information_set_g, n):
+    inf_set_h = []
+    for i in range(0, n):
+        if i not in information_set_g:
+            inf_set_h.append(i)
+    return inf_set_h
+
+
+def get_hamming_distance(codeword, any_codeword):
+    return np.sum(codeword != any_codeword)

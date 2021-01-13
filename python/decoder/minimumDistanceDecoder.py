@@ -1,14 +1,18 @@
 from python.linearCode import LinearCode
 import numpy as np
+import time
 import matplotlib.pyplot as plot
+import python.utils as utils
 
 
 def minimum_distance_decoder(lin_code):
     error_bit_array = np.arange(0.0, 1.1, 0.1)
     array_count_error = []
     array_rejection_count_error = []
+    time_array = []
 
     for error_bit in error_bit_array:
+        start_time = time.time_ns()
         count_error = 0
         rejection_count = 0
 
@@ -23,7 +27,7 @@ def minimum_distance_decoder(lin_code):
 
             received_message = (error_vector + codeword) % 2  # передали сообщение, начинаем декодирование
             for index, any_codeword in enumerate(codewords):  # ищем минимальное расстояние
-                temp_hamming_distance = get_hamming_distance(received_message, any_codeword)
+                temp_hamming_distance = utils.get_hamming_distance(received_message, any_codeword)
                 if temp_hamming_distance < hamming_distance:
                     hamming_distance = temp_hamming_distance
                     result_codeword = any_codeword
@@ -31,7 +35,7 @@ def minimum_distance_decoder(lin_code):
             del copy_codewords[temp_index]
 
             for some_codeword in copy_codewords:  # проверяем существует ли несколько код.слов с мин расстоянием
-                if get_hamming_distance(some_codeword, received_message) == hamming_distance:
+                if utils.get_hamming_distance(some_codeword, received_message) == hamming_distance:
                     rejection_count += 1
                     flag_rejection_error = True
                     break
@@ -40,10 +44,17 @@ def minimum_distance_decoder(lin_code):
                 # сравниваем слова если не было отказа
                 count_error += 1
                 continue
+
+        end_time = time.time_ns()
+
+        time_array.append(end_time - start_time)
         array_count_error.append(count_error)
         array_rejection_count_error.append(rejection_count)
-        print("Bit error:", error_bit, "decoded: ", len(codewords) - count_error - rejection_count,
-              "count errors:", count_error, ", rejection counts:", rejection_count)
+        print("Elapsed:", end_time - start_time,
+              ", bit error:", error_bit,
+              ", decoded:", len(codewords) - count_error - rejection_count,
+              ", count errors:", count_error,
+              ", rejection counts:", rejection_count)
 
     plot.figure()
     plot.xlabel('bit error')
@@ -54,10 +65,6 @@ def minimum_distance_decoder(lin_code):
     plot.show()
 
 
-def get_hamming_distance(codeword, any_codeword):
-    return np.sum(codeword != any_codeword)
-
-
-linear_code = LinearCode(15, 8, 2)
+linear_code = LinearCode(30, 10, 2)
 linear_code.print_params()
 minimum_distance_decoder(linear_code)
