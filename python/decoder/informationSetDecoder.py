@@ -6,18 +6,10 @@ import matplotlib.pyplot as plot
 from python.linearCode import LinearCode
 
 
-'''
-1. Составить множество информационных совокупностей
-Инф. совокупность (y) - множество (массив) из уникальных
-возрастающих элементов в диапазоне от 0 до n - 1 длины k.
-Например, [0, 1, 2, 3]. При этом G(y) должна быть несингулярной.
-2. 
-'''
-
-
 def information_set_decoding(lin_code):
     information_sets = get_all_information_sets(lin_code.n, lin_code.k, lin_code.G)
     H_gamma_array = []
+    print("Количество совокупностей (итераций):", information_sets.__sizeof__())
     for inf_set in information_sets:
         inf_set_h = get_information_set_h(inf_set, lin_code.n)
         Hi = utils.matrix_from_columns(lin_code.H, inf_set_h)
@@ -71,9 +63,11 @@ def information_set_decoding(lin_code):
     plot.legend()
     plot.show()
 
+
 def get_all_information_sets(n, k, matrix_g):
     information_sets = []
     candidates = itertools.combinations(list(range(0, n)), k)
+    print("Candidates: ", )
     for candidate in candidates:
         Gi = utils.matrix_from_columns(matrix_g, list(candidate))
         try:
@@ -81,6 +75,7 @@ def get_all_information_sets(n, k, matrix_g):
         except RuntimeError:
             continue
         information_sets.append(list(candidate))
+    print("vishli")
     return information_sets
 
 
@@ -92,7 +87,7 @@ def get_information_set_h(information_set_g, n):
     return inf_set_h
 
 
-linear_code = LinearCode(15, 8, 2)
+linear_code = LinearCode(30, 10, 2)
 
 linear_code.print_params()
 information_set_decoding(linear_code)

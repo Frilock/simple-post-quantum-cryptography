@@ -48,7 +48,6 @@ def syndrome_decoding_analysis(lin_code):
     plot.show()
 
 
-linear_code = LinearCode(30, 10, 2)
+linear_code = LinearCode(20, 10, 2)
 linear_code.print_params()
-
 syndrome_decoding_analysis(linear_code)

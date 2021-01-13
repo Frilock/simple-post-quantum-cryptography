@@ -14,7 +14,7 @@ class LinearCode(object):
         matrix_a = np.random.randint(self.q, size=(self.k, self.n - self.k))
         self.G = self.get_generator_matrix(matrix_a)
         self.H = self.get_check_matrix(matrix_a)
-        self.codewords = self.get_all_codewords()
+        self.codewords = self.filter_codewords_by_weight(self.get_all_codewords(), 3)
         self.d = self.get_min_distance()  # Минимальное расстояние
         self.t = int((self.d - 1) / 2)  # Корректирующая способность
 
@@ -48,6 +48,13 @@ class LinearCode(object):
         for message in itertools.product(list(range(0, self.q)), repeat=self.k):
             codewords.append(self.get_codeword(message))
         return codewords
+
+    def filter_codewords_by_weight(self, codewords, min_weight):
+        filtered_codewords = []
+        for codeword in codewords:
+            if self.get_weight(codeword) >= min_weight:
+                filtered_codewords.append(codeword)
+        return filtered_codewords
     
     def get_syndrome(self, vector):
         return (vector @ self.H.T) % self.q
