@@ -77,8 +77,3 @@ def polynomial_decoder(lin_code):
     plot.show()
 
     return time_array, errors, rejections
-
-
-linear_code = LinearCode(30, 10, 2)
-linear_code.print_params()
-polynomial_decoder(linear_code)

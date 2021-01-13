@@ -48,8 +48,3 @@ def syndrome_decoding_analysis(lin_code):
     plot.show()
 
     return time_array, errors, rejections
-
-
-linear_code = LinearCode(30, 10, 2)
-linear_code.print_params()
-syndrome_decoding_analysis(linear_code)
