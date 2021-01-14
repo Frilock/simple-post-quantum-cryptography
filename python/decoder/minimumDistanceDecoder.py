@@ -7,6 +7,7 @@ def minimum_distance_decoder(lin_code, bit_error_array):
     errors = []
     rejections = []
     time_array = []
+    decoding = []
 
     for error_bit in bit_error_array:
         start_time = time.time()
@@ -43,10 +44,12 @@ def minimum_distance_decoder(lin_code, bit_error_array):
                 continue
 
         end_time = time.time()
+        decode = len(lin_code.codewords) - count_error - rejection_count
 
         time_array.append(end_time - start_time)
         errors.append(count_error)
         rejections.append(rejection_count)
+        decoding.append(decode)
 
         print("Elapsed:", end_time - start_time,
               ", bit error:", error_bit,
@@ -54,4 +57,4 @@ def minimum_distance_decoder(lin_code, bit_error_array):
               ", count errors:", count_error,
               ", rejection counts:", rejection_count)
 
-    return time_array, errors, rejections
+    return time_array, errors, rejections, decoding

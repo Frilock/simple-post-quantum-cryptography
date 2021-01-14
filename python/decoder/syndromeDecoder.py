@@ -8,6 +8,7 @@ def syndrome_decoding_analysis(lin_code, bit_error_array):
     errors = []
     rejections = []
     time_array = []
+    decoding = []
 
     for bit_error in bit_error_array:
         start_time = time.time()
@@ -27,10 +28,12 @@ def syndrome_decoding_analysis(lin_code, bit_error_array):
             else:  # Синдрома нет в таблице - отказ от декодирования
                 rejection_count += 1
         end_time = time.time()
+        decode = len(lin_code.codewords) - error_count - rejection_count
 
         time_array.append(end_time - start_time)
         errors.append(error_count)
         rejections.append(rejection_count)
+        decoding.append(decode)
 
         print("Elapsed:", end_time - start_time,
               ", Bit error:", bit_error,
@@ -38,4 +41,4 @@ def syndrome_decoding_analysis(lin_code, bit_error_array):
               ", count errors:", error_count,
               ", rejection counts:", rejection_count)
 
-    return time_array, errors, rejections
+    return time_array, errors, rejections, decoding

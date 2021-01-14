@@ -43,21 +43,30 @@ def rejection_analyse(syndrome, distance, information, polynomial):
     create_plot(syndrome, distance, information, polynomial)
 
 
-linear_code = LinearCode(40, 20, 2)
+def decode_analyse(syndrome, distance, information, polynomial):
+    print("Start decode rejections")
+    plot.figure()
+    plot.xlabel('bit error')
+    plot.ylabel('decoded')
+    create_plot(syndrome, distance, information, polynomial)
+
+
+linear_code = LinearCode(30, 10, 2)
 linear_code.print_params()
 
 print('\n', "Start syndrome decoding")
-syndrome_time, syndrome_errors, syndrome_rejections = syndrome_decoding_analysis(linear_code, bit_error_array)
+syndrome_time, syndrome_errors, syndrome_rejections, syndrome_decoded = syndrome_decoding_analysis(linear_code, bit_error_array)
 
 print('\n', "Start minimum distance decoding")
-distance_time, distance_errors, distance_rejections = minimum_distance_decoder(linear_code, bit_error_array)
+distance_time, distance_errors, distance_rejections, distance_decoded = minimum_distance_decoder(linear_code, bit_error_array)
 
 print('\n', "Start information set decoding")
-information_time, information_errors, information_rejections = information_set_decoder(linear_code, bit_error_array)
+information_time, information_errors, information_rejections, information_decoded = information_set_decoder(linear_code, bit_error_array)
 
 print('\n', "Start polynomial decoding")
-polynomial_time, polynomial_errors, polynomial_rejections = polynomial_decoder(linear_code, bit_error_array)
+polynomial_time, polynomial_errors, polynomial_rejections, polynomial_decoded = polynomial_decoder(linear_code, bit_error_array)
 
 time_analyse(syndrome_time, distance_time, information_time, polynomial_time)
 error_analyse(syndrome_errors, distance_errors, information_errors, polynomial_errors)
 rejection_analyse(syndrome_rejections, distance_rejections, information_rejections, polynomial_rejections)
+decode_analyse(syndrome_decoded, distance_decoded, information_decoded, polynomial_decoded)
