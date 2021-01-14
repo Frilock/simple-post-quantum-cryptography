@@ -1,18 +1,15 @@
-from python.linearCode import LinearCode
 import time
 import numpy as np
-import matplotlib.pyplot as plot
 import python.utils as utils
 
 
-def syndrome_decoding_analysis(lin_code):
+def syndrome_decoding_analysis(lin_code, bit_error_array):
     syndrome_table = lin_code.get_syndrome_table()
-    bit_errors = np.arange(0, 1.1, 0.1)
     errors = []
     rejections = []
     time_array = []
 
-    for bit_error in bit_errors:
+    for bit_error in bit_error_array:
         start_time = time.time()
         error_count = 0
         rejection_count = 0
@@ -35,16 +32,10 @@ def syndrome_decoding_analysis(lin_code):
         errors.append(error_count)
         rejections.append(rejection_count)
 
-        print("Elapsed: ", end_time - start_time)
-        print("Bit error:", bit_error, "decoded: ", len(lin_code.codewords) - error_count - rejection_count,
-              "count errors:", error_count, ", rejection counts:", rejection_count)
-
-    plot.figure()
-    plot.xlabel('bit error')
-    plot.ylabel('errors amount')
-    plot.plot(bit_errors, errors, label='errors')
-    plot.plot(bit_errors, rejections, label='rejections')
-    plot.legend()
-    plot.show()
+        print("Elapsed:", end_time - start_time,
+              ", Bit error:", bit_error,
+              ", decoded:", len(lin_code.codewords) - error_count - rejection_count,
+              ", count errors:", error_count,
+              ", rejection counts:", rejection_count)
 
     return time_array, errors, rejections

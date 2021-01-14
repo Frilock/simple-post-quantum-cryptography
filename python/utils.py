@@ -73,7 +73,8 @@ def inverse_matrix(matrix):
 
 def get_all_information_sets(n, k, matrix_g):
     information_sets = []
-    candidates = itertools.combinations(list(range(0, n)), k)
+    candidates = list(itertools.combinations(list(range(0, n)), k))
+
     for candidate in candidates:
         Gi = matrix_from_columns(matrix_g, list(candidate))
         try:

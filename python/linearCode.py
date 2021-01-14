@@ -61,12 +61,22 @@ class LinearCode(object):
     
     def get_syndrome_table(self):
         syndrome_table = {}
-        for i in range(0, 2 ** self.n):
-            error_pattern = utils.int_to_vector(i, self.n)
-            if self.get_weight(error_pattern) <= self.t:
-                syndrome = self.get_syndrome(error_pattern)
-                syndrome_str = utils.vector_to_str(syndrome)
-                syndrome_table[syndrome_str] = error_pattern
+
+        error_pattern = utils.int_to_vector(0, self.n)
+        syndrome = self.get_syndrome(error_pattern)
+        syndrome_str = utils.vector_to_str(syndrome)
+        syndrome_table[syndrome_str] = error_pattern
+
+        for i in range(0, self.t):
+            positions = list(itertools.product(list(range(0, self.n)), repeat=i+1))
+            for p in positions:
+                error_pattern = np.zeros(self.n, dtype=int)
+                for d in list(p):
+                    error_pattern[d] = 1
+                if self.get_weight(error_pattern) <= self.t:
+                    syndrome = self.get_syndrome(error_pattern)
+                    syndrome_str = utils.vector_to_str(syndrome)
+                    syndrome_table[syndrome_str] = error_pattern
         return syndrome_table
 
     def get_min_distance(self):

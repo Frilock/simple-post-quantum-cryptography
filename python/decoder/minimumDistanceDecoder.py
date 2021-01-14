@@ -1,17 +1,14 @@
-from python.linearCode import LinearCode
 import numpy as np
 import time
-import matplotlib.pyplot as plot
 import python.utils as utils
 
 
-def minimum_distance_decoder(lin_code):
-    error_bit_array = np.arange(0.0, 1.1, 0.1)
+def minimum_distance_decoder(lin_code, bit_error_array):
     errors = []
     rejections = []
     time_array = []
 
-    for error_bit in error_bit_array:
+    for error_bit in bit_error_array:
         start_time = time.time()
         count_error = 0
         rejection_count = 0
@@ -50,18 +47,11 @@ def minimum_distance_decoder(lin_code):
         time_array.append(end_time - start_time)
         errors.append(count_error)
         rejections.append(rejection_count)
+
         print("Elapsed:", end_time - start_time,
               ", bit error:", error_bit,
               ", decoded:", len(codewords) - count_error - rejection_count,
               ", count errors:", count_error,
               ", rejection counts:", rejection_count)
-
-    plot.figure()
-    plot.xlabel('bit error')
-    plot.ylabel('count error')
-    plot.plot(error_bit_array, errors, color='pink', label='count error')
-    plot.plot(error_bit_array, rejections, color='green', label='rejection error')
-    plot.legend()
-    plot.show()
 
     return time_array, errors, rejections

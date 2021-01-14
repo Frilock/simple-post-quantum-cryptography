@@ -1,11 +1,10 @@
 import numpy as np
 import time
-import matplotlib.pyplot as plot
 from python.linearCode import LinearCode
 import python.utils as utils
 
 
-def polynomial_decoder(lin_code):
+def polynomial_decoder(lin_code, bit_error_array):
     information_sets = utils.get_all_information_sets(lin_code.n, lin_code.k, lin_code.G)
     H_gamma_array = []
 
@@ -19,18 +18,19 @@ def polynomial_decoder(lin_code):
     time_array = []
     errors = []
     rejections = []
-    bit_error_array = np.arange(0.0, 1.1, 0.1)
     for bit_error in bit_error_array:
         start_time = time.time()
         rejection_count = 0
         error_count = 0
-        print("Number of codewords", len(lin_code.codewords))
+
         for codeword in lin_code.codewords:
             error_vector = lin_code.get_error_vector(bit_error)
             received_message = (error_vector + codeword) % 2
             decoded_flag = False
+
             for i, inf_set in enumerate(information_sets):
                 H_gamma = H_gamma_array[i]
+
                 for k in range(0, len(inf_set) + 1):
                     theta = np.zeros(lin_code.n, dtype=int)
                     if k != 0:
@@ -45,8 +45,8 @@ def polynomial_decoder(lin_code):
                         G_gamma = (Gi_inv @ lin_code.G) % lin_code.q
                         bi = np.zeros(lin_code.k, dtype=int)
 
-                        for i, value in enumerate(inf_set):
-                            bi[i] = received_message[value]
+                        for j, value in enumerate(inf_set):
+                            bi[j] = received_message[value]
                         decoded = (bi @ G_gamma) % lin_code.q
 
                         if not np.array_equal(codeword, decoded):
@@ -67,13 +67,5 @@ def polynomial_decoder(lin_code):
               "decoded: ", len(lin_code.codewords) - error_count - rejection_count,
               "count errors:", error_count,
               ", rejection counts:", rejection_count)
-
-    plot.figure()
-    plot.xlabel('bit error')
-    plot.ylabel('count error')
-    plot.plot(bit_error_array, errors, color='pink', label='count error')
-    plot.plot(bit_error_array, rejections, color='green', label='rejection error')
-    plot.legend()
-    plot.show()
 
     return time_array, errors, rejections
