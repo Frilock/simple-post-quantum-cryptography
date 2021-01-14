@@ -7,7 +7,7 @@ from python.decoder.minimumDistanceDecoder import minimum_distance_decoder
 from python.decoder.informationSetDecoder import information_set_decoder
 from python.decoder.coveringPolynomDecoder import polynomial_decoder
 
-bit_error_array = np.arange(0.0, 1.1, 0.1)
+bit_error_array = np.arange(0.0, 1.0, 0.1)
 
 
 def create_plot(syndrome, distance, information, polynomial):
@@ -43,7 +43,7 @@ def rejection_analyse(syndrome, distance, information, polynomial):
     create_plot(syndrome, distance, information, polynomial)
 
 
-linear_code = LinearCode(20, 7, 2)
+linear_code = LinearCode(40, 20, 2)
 linear_code.print_params()
 
 print('\n', "Start syndrome decoding")

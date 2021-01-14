@@ -6,6 +6,8 @@ from python.linearCode import LinearCode
 
 def information_set_decoder(lin_code, bit_error_array):
     information_sets = utils.get_all_information_sets(lin_code.n, lin_code.k, lin_code.G)
+    information_sets = information_sets[:100]
+    print(f"create information set len:{len(information_sets)}")
     H_gamma_array = []
 
     for inf_set in information_sets:
@@ -50,6 +52,7 @@ def information_set_decoder(lin_code, bit_error_array):
                 counter += 1
             if counter == len(information_sets):
                 rejection_count += 1
+
         end_time = time.time()
 
         time_array.append(end_time - start_time)
